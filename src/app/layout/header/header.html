@@ -1,0 +1,16 @@
+<div class="content">
+    <div class="header flex-row">
+        <div class="session-info flex-row" *ngIf="user$ | async as data">
+            <h3>{{ data.user.full_name }}</h3>
+            <p> {{ data.last_login.substring(0, 10) }} - {{ data.last_login | date: 'shortTime' }} :Hoy 
+                <br> 
+                {{ data.second_last_login.substring(0, 10) }} - {{ data.second_last_login | date: 'shortTime' }} :Última vez
+            </p>
+        </div>
+        <div class="header-buttons flex-row">
+            <button class="btn btn-third" (click)="logout()">
+                <i class="fa fa-sign-out"></i>
+            </button>
+        </div>
+    </div>
+</div>

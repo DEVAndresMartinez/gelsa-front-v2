@@ -1,0 +1,33 @@
+:host {
+    display: block;
+    grid-area: header;
+    position: fixed;
+    width: calc(100% - var(--sidebar-width));
+    left: var(--sidebar-width);
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: var(--header-height);
+    padding: 1rem;
+    background-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: var(--white-color);
+
+    .header {
+        width: 100%;
+        justify-content: space-between;
+
+        .session-info {
+            width: 100%;
+        }
+
+        .header-buttons {
+            width: fit-content;
+            gap: 0.5rem;
+        }
+    }
+}

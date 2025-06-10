@@ -1,0 +1,44 @@
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert {
+    width: fit-content;
+    padding: 1rem;
+    border-radius: 4px;
+    color: var(--white-color);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.success {
+    background-color: var(--secondary-color);
+}
+
+.error {
+    background-color: var(--danger-color);
+}
+
+.warning {
+    background-color: var(--warning-color);
+}
+
+.info {
+    background-color: var(--third-color);
+}
+
+button {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--white-color);
+    font-weight: bold;
+    cursor: pointer;
+}

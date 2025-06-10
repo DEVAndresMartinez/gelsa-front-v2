@@ -1,0 +1,9 @@
+<div class="alert-container">
+    @for (alert of alerts; track $index) {
+        <app-alert 
+            [type]="alert.type"
+            [message]="alert.message"
+            (close)="onClose(alert.id)">
+        </app-alert>
+    }
+</div>

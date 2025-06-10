@@ -1,1 +1,215 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+:root {
+    --sidebar-width: 250px;
+    --header-height: 60px;
+    --header-card-height: 50px;
+
+    --background-color: #EFF3F8;
+    --primary-color: #002360;
+    --contrast-primary-color: #001D57;
+    --secondary-color: #00AE42;
+    --contrast-secondary-color: #05cc05;
+    --third-color: #3CB4E5;
+    --warning-color: #FFCD00;
+    --contrast-warning-color: #FFE680;
+    --danger-color: #FF0000;
+    --contrast-danger-color: #FF4D4D;
+    --black-color: #181818;
+    --white-color: #FFFFFF;
+    --gray-color: #B0B0B0;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px var(--contrast-primary-color) inset !important;
+    -webkit-border-radius: 4px !important;
+    -webkit-text-fill-color: var(--white-color) !important;
+}
+
+.container {
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-12 {
+    width: 100%;
+    height: 100%;
+    background-color: var(--white-color);
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+
+    .header-card {
+        height: var(--header-card-height);
+        border-bottom: 1px solid var(--gray-color);
+        padding: 2rem;
+
+        .form-group {
+            width: 20rem;
+
+            input {
+                background-color: var(--white-color);
+                color: var(--black-color);
+                border: 1px solid var(--gray-color);
+
+                &:focus {
+                    outline: none;
+                    border-color: var(--secondary-color);
+                }
+            }
+        }
+    }
+
+}
+
+.flex-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+.scroll {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+}
+
+.draggable-header {
+  cursor: move;
+  user-select: none;
+}
+
+.form-group {
+    width: 100%;
+    position: relative;
+    gap: 0.5rem;
+
+    label {
+        width: 100% !important;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    input {
+        width: 100%;
+        height: 2.5rem;
+        padding: 0.5rem;
+        padding-left: 2.5rem;
+        border-radius: 4px;
+        border: 1px solid var(--primary-color);
+        background-color: var(--contrast-primary-color);
+        color: var(--white-color);
+
+        &:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+    }
+
+    i {
+        position: absolute;
+        left: 1rem;
+        bottom: .8rem;
+        color: var(--gray-color);
+    }
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    color: var(--white-color);
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: var(--contrast-secondary-color);
+    }
+
+    &:disabled {
+        background-color: var(--contrast-primary-color);
+        cursor: not-allowed;
+    }
+}
+
+.btn-success {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+
+    &:hover {
+        background-color: var(--contrast-secondary-color);
+    }
+
+    &:disabled {
+        background-color: var(--contrast-primary-color);
+        cursor: not-allowed;
+    }
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: var(--white-color);
+
+    &:hover {
+        background-color: var(--contrast-danger-color);
+    }
+
+    &:disabled {
+        background-color: var(--contrast-primary-color);
+        cursor: not-allowed;
+    }
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: var(--black-color);
+
+    &:hover {
+        background-color: var(--contrast-warning-color);
+    }
+
+    &:disabled {
+        background-color: var(--contrast-primary-color);
+        cursor: not-allowed;
+    }
+}
+
+.btn-third {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+
+    &:hover {
+        background-color: var(--third-color);
+    }
+
+    &:disabled {
+        background-color: var(--contrast-primary-color);
+        cursor: not-allowed;
+    }
+}

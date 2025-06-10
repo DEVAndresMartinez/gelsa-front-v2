@@ -1,0 +1,14 @@
+<div class="content">
+    <div class="sidebar-links flex-column">
+        @for (item of menuItems; track $index) {
+        <li
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLink]="item.link">
+            <i [class]="item.icon"></i>
+            {{ item.title }}
+        </li>
+        }
+    </div>
+</div>
+
