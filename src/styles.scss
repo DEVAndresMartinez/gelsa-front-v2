@@ -25,6 +25,17 @@
     --gray-color: #B0B0B0;
 }
 
+.table {
+  border-collapse: collapse;
+  border: none;
+}
+
+.table th,
+.table td {
+  border: none;
+}
+
+
 input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 30px var(--contrast-primary-color) inset !important;
     -webkit-border-radius: 4px !important;
@@ -67,6 +78,19 @@ input:-webkit-autofill {
         }
     }
 
+    .loading-spinner {
+        width: 100%;
+        height: calc(100% - var(--header-card-height));
+        justify-content: center;
+        text-align: center;
+
+        .loading-span {
+            font-size: 3rem;
+            color: var(--gray-color);
+        }
+
+    }
+
 }
 
 .flex-row {
@@ -83,7 +107,6 @@ input:-webkit-autofill {
     align-items: center;
     gap: 1rem;
 }
-
 
 .scroll {
     overflow-y: auto;

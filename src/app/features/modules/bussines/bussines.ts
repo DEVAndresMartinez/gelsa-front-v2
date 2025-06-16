@@ -30,9 +30,14 @@ export class Bussines implements OnInit {
 
   loadBusinessData() {
     this.loading = true;
-    this.bussinesService.getBusinessData().subscribe({
-      next: (data) => {
-        this.bussinesData = data;
+    const body = {
+      fecha_fin: "2024-05-30",
+      fecha_inicio: "2024-05-01"
+    }
+    this.bussinesService.getBusinessData(body).subscribe({
+      next: (data: any) => {
+        this.bussinesData = data.data.data;
+        console.log('Datos de negocios cargados:', this.bussinesData);
         if (this.bussinesData.length === 0) {
           this.alertService.showAlert('info', 'No hay comercios disponibles.', 5000);
         } else {

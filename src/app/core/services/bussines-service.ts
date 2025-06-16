@@ -12,7 +12,7 @@ export class BussinesService {
 
     constructor(private http: HttpClient) {}
 
-    getBusinessData(): Observable<any[]> {
-        return this.http.get<any[]>(`${this.API_BACK}/bussines-all/`);
+    getBusinessData(body: any): Observable<any[]> {
+        return this.http.post<any[]>(`${this.API_BACK}/bussines/`, body);
     }
 }

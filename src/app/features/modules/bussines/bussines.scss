@@ -1,0 +1,47 @@
+.body-card {
+    width: 100%;
+    height: calc(100% - var(--header-height)) !important;
+    padding: 1rem;
+
+    .table-container {
+        width: 100%;
+        
+        .table {
+            width: 100%;
+            border: none;
+
+            thead {
+                background-color: var(--background-color);
+                tr {
+                    border-radius: 4px 4px 0 0;
+                    th {
+                        width: auto;
+                        padding: .8rem 1rem;
+                        height: 2rem;
+                    }
+                }
+            }
+            
+            tbody {
+                tr {
+                    td {
+                        padding: .8rem 1rem;
+                        &:nth-child(1), &:nth-child(2),&:nth-child(5) {
+                            background-color: aqua;
+                            text-align: center;
+                        } 
+                    }
+
+                    &:hover {
+                        background-color: var(--gray-color);
+                        cursor: pointer;
+                    }
+
+                }
+            }
+
+        }
+
+    }
+
+}
