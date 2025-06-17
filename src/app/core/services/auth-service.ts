@@ -32,28 +32,6 @@ export class AuthService {
     return false;
   }
 
-  recoverPassword(email: string): Observable<any> {
-    return this.http.post<any>(`${this.API_BACK}/send-reset-password/${email}`, {});
-  }
-
-  /**
-   * @param userId
-   * @param password
-   * @param token
-   */
-
-  changePasword(userId: string, password: string, token?: string): Observable<any> {
-    let url = '';
-    let body: any = { password };
-
-    if (token) {
-      url = `${this.API_BACK}/reset-password/${userId}/${token}`;
-    } else {
-      url = `${this.API_BACK}/change-password/${userId}`;
-    }
-    return this.http.put<any>(url, body);
-  }
-
   getUserProfile(): Observable<any> {
     return this.http.get<any>(`${this.API_AUTH}/users/me/`).pipe(
       tap(user => this.userSubject.next(user))

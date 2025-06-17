@@ -12,11 +12,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class Sidebar implements OnInit {
 
   menuItems = [
-    // {
-    //   title: 'Usuarios',
-    //   icon: 'fa fa-users',
-    //   link: '/modules/home'
-    // },
+    {
+      title: 'Usuarios',
+      icon: 'fa fa-users',
+      link: '/modules/users'
+    },
     {
       title: 'Roles y Permisos',
       icon: 'fa fa-shield',

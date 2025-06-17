@@ -2,13 +2,15 @@
     width: 100%;
     height: calc(100% - var(--header-height)) !important;
     padding: 1rem;
+    gap: .5rem;
 
     .table-container {
         width: 100%;
-        
+
         .table {
             width: 100%;
             border: none;
+            border-bottom: 1px solid var(--gray-color);
 
             thead {
                 background-color: var(--background-color);
@@ -16,32 +18,96 @@
                     border-radius: 4px 4px 0 0;
                     th {
                         width: auto;
-                        padding: .8rem 1rem;
+                        padding: 0.8rem 1rem;
                         height: 2rem;
+                        cursor: pointer;
+                        
+                        &:hover {
+                            background-color: var(--gray-color);
+                            transition: all 0.1s ease-in;
+                        }
                     }
                 }
             }
-            
+
             tbody {
+                .selected-row {
+                    background-color: var(--background-color)
+                }
                 tr {
                     td {
-                        padding: .8rem 1rem;
-                        &:nth-child(1), &:nth-child(2),&:nth-child(5) {
-                            background-color: aqua;
+                        padding: 0.3rem 1rem;
+
+                        button {
+                                padding: 0.5rem;
+                        }
+
+                        &:nth-child(1),
+                        &:nth-child(2),
+                        &:nth-child(5),
+                        &:nth-child(7) {
                             text-align: center;
-                        } 
+                            gap: 5px;
+                            width: 12%;
+                        }
+                        &:nth-child(3) {
+                            width: 30%;
+                        }
+                        &:nth-child(4) {
+                            width: 20%;
+                        }
+                        &:nth-child(6) {
+                            text-align: right;
+                            width: 15%;
+                        }
                     }
 
                     &:hover {
                         background-color: var(--gray-color);
+                        transition: all 0.1s ease-in;
                         cursor: pointer;
                     }
-
                 }
             }
-
         }
-
     }
 
+    .footer {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        .totals {
+            align-items: end;
+        }
+    }
+
+    .pagination {
+        width: 100%;
+        justify-content: space-evenly;
+        padding: 1rem;
+        border-top: 1px solid var(--gray-color);
+        border-bottom: 1px solid var(--gray-color);
+
+
+        .btn-pag {
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: var(--white-color);
+            padding: 0.4rem 0.8rem;
+
+            &:hover {
+                background-color: var(--third-color);
+                color: var(--white-color);
+            }
+
+            &:disabled {
+                background-color: var(--white-color);
+                color: var(--gray-color);
+                cursor: not-allowed;
+            }
+        }
+    }
 }
+

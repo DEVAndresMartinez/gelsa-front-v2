@@ -1,0 +1,81 @@
+<div class="card-12">
+    <div class="header-card flex-row">
+        <span class="flex-row">
+            <i class="fa-solid fa-list"></i>
+            <p>Listado de Usuarios</p>
+        </span>
+        <div class="filters actions flex-row">
+            <button type="button" class="btn btn-success flex-row" (click)="openNewUser()">
+                <i class="fa-solid fa-plus"></i>
+                <span>Nuevo</span>
+            </button>
+        </div>
+    </div>
+    @if(loading){
+        <div class="loading-spinner flex-row">
+            <span class="loading-span flex-column">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Cargando datos...</p>
+            </span>
+        </div>
+    }@else {
+        <div class="body-card flex-column">
+            <div class="body-container scroll flex-row">
+                @for (user of usersData; track $index) {
+                    <div class="card flex-column">
+                        <h4>{{ user.full_name }}</h4>
+                        <p> <b>Correo: </b>  <br> {{ user.email }}</p>
+                        <p> <b>Rol: </b> {{ user.roles[0]?.role_name || 'Sin rol' }}</p>
+                        <div class="actions flex-row">
+                            <button type="button" class="btn btn-warning flex-row" (click)="openEditRoles(user)">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <span>Editar Roles</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>  
+    }
+</div>
+
+<div class="dialog-container flex-row" *ngIf="userDialog">
+    <div class="dialog-content flex-column">
+        <h3 class="draggable-header" appDraggable>Crear Nuevo Usuario</h3>
+        <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="form flex-column">
+            <div class="form-group flex-column">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" formControlName="email" id="email" placeholder="Ingrese un correo electrónico" required autocomplete="email" maxlength="80">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+            <div class="form-group flex-column">
+                <label for="full_name">Nombre de Usuario</label>
+                <input type="full_name" formControlName="full_name" id="full_name" placeholder="Ingrese un nombre de usuario" required autocomplete="full_name" maxlength="80">
+                <i class="fa-solid fa-user"></i>
+            </div>
+          <div class="actions flex-row">
+            <button type="submit" class="btn btn-success flex-row"> <i class="fa-solid fa-check"></i>Crear</button>
+            <button type="button" class="btn btn-warning flex-row" (click)="hideDialog()"> <i class="fa-solid fa-times"></i>Cancelar</button>
+          </div>  
+        </form>
+    </div>
+</div>
+
+<div class="dialog-container flex-row" *ngIf="rolesDialog">
+    <div class="dialog-content flex-column">
+        <h3 class="draggable-header" appDraggable>Asignar un rol</h3>
+        <div class="dialog-body">
+            @for (role of rolesData; track $index) {
+                <label class="custom-checkbox">
+                  <input type="checkbox" [id]="role.id" [checked]="roleSelected === role.id" (click)="selectedRole(role.id)"/>
+                  <span class="checkmark"></span>
+                  {{ role.role_name }}
+                </label>
+            }
+        </div>
+        <div class="actions flex-row">
+          <button type="submit" class="btn btn-success flex-row" (click)="saveRoles()"> <i class="fa-solid fa-check"></i>Actualizar</button>
+          <button type="button" class="btn btn-warning flex-row" (click)="hideRolesDialog()"> <i class="fa-solid fa-times"></i>Cancelar</button>
+        </div>  
+    </div>
+</div>

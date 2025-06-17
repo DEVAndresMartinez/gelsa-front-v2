@@ -41,11 +41,15 @@ export class Header implements OnInit {
   }
 
   logout() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
     this.authService.logout().subscribe({
       next: () => {
-        localStorage.removeItem('access_token');
-        window.location.reload();
         this.router.navigate(['/auth/login']);
+        localStorage.removeItem('access_token');
       },
       error: (error) => {
         this.alertService.showAlert('error', 'Error al cerrar sesión. Inténtalo de nuevo.', 5000);

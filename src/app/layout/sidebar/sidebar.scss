@@ -1,9 +1,11 @@
 :host {
+    padding: 1rem 1px;
     display: block;
     grid-area: sidebar;
     height: calc(100dvh - var(--header-height));
     width: var(--sidebar-width);
-    background-color: var(--white-color);
+    background-color: var(--background-color);
+    align-content: center;
 }
 
 .content {
@@ -11,9 +13,9 @@
     background-color: var(--white-color);
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    box-shadow: 1px 0 10px rgba(0, 0, 0, 0.1);
-    height: calc(100dvh - var(--header-height)) !important;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.25);
+    height: 100%;
+    border-radius: 8px;
     
     .sidebar-links {
         width: var(--sidebar-width);
@@ -49,3 +51,4 @@
         }
     }
 }
+

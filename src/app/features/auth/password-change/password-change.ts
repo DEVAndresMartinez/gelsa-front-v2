@@ -4,6 +4,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AuthService } from '../../../core/services/auth-service';
 import { AlertService } from '../../../core/services/alert-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UserService } from '../../../core/services/user-service';
 
 @Component({
   selector: 'app-password-change',
@@ -27,6 +28,7 @@ export class PasswordChange implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private userService: UserService,
     private alertService: AlertService,
     private router: Router,
     private route: ActivatedRoute
@@ -47,11 +49,11 @@ export class PasswordChange implements OnInit {
     } else {
       const password = this.passwordForm.value.password || '';
       this.loading = true;
-      this.authService.changePasword(this.userId, password, this.token).subscribe({
+      this.userService.changePasword(this.userId, password, this.token).subscribe({
         next: () => {
           this.passwordForm.reset()
           this.alertService.showAlert('success', 'Contraseña actualizada correctamente', 5000);
-          this.router.navigate(['/modules/home']);
+          this.router.navigate(['/modules/bussines']);
           this.loading = false;
         },
         error: () => {

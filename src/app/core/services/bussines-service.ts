@@ -15,4 +15,14 @@ export class BussinesService {
     getBusinessData(body: any): Observable<any[]> {
         return this.http.post<any[]>(`${this.API_BACK}/bussines/`, body);
     }
+
+    getTransaccioens(body: any): Observable<any> {
+    const httpOptions = {
+      headers: {
+        'accept': 'application/json'
+      }
+    };
+    return this.http.post<any>('https://comercialapptest.practisistemas.com:8087/api/get-transactions', body, httpOptions);
+  }
+
 }

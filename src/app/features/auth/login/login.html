@@ -27,7 +27,7 @@
 </div>
 
 <div class="dialog-container flex-row" *ngIf="showRecoveryDialog">
-    <div class="dialog-content flex-column" >
+    <div class="dialog-content flex-column">
         <h3 class="draggable-header" appDraggable>Recuperar Contraseña</h3>
         <form [formGroup]="recoveryForm" (ngSubmit)="onRecoverPassword()" class="form flex-column">
             <div class="form-group flex-column">
@@ -36,8 +36,8 @@
                 <i class="fa-solid fa-envelope"></i>
             </div>
             <div class="actions flex-row">
-                <button type="submit" class="btn btn-success"> <i class="fa-solid fa-check"></i> Enviar</button>
-                <button type="button" class="btn btn-warning" (click)="closeRecoveryDialog()"> <i class="fa-solid fa-times"></i> Cancelar</button>
+                <button type="submit" class="btn btn-success flex-row"> <i class="fa-solid fa-check"></i>Enviar</button>
+                <button type="button" class="btn btn-warning flex-row" (click)="closeRecoveryDialog()"> <i class="fa-solid fa-times"></i>Cancelar</button>
             </div>
         </form>
     </div>
