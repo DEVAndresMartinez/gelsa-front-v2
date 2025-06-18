@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-
-
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class ExportReportsService {
       item.codeDane,
       item.business_id,
       item.business_name || '',
-      `${ item.department || '' } / ${ item.city || '' }`,
+      `${item.department || ''} / ${item.city || ''}`,
       item.total_transacciones,
       `$${item.total_ventas}`
     ]);
@@ -40,5 +40,97 @@ export class ExportReportsService {
 
     doc.save(`${fieldName}.pdf`)
 
+  }
+
+  exportToExcelBusiness(data: any[], fileName: string = 'reporte_comercios') {
+    const worksheetData = data.map(item => ({
+      'DANE': item.codDane,
+      'Terminal': item.business_id,
+      'Nombre': item.business_name || '',
+      'Ubicación': `${item.department || ''} / ${item.city || ''}`,
+      'Total TX': item.total_transacciones,
+      'Total Ventas': item.total_ventas
+    }));
+
+    const totalTX = data.reduce((sum, item) => sum + Number(item.total_transacciones || 0), 0);
+    const totalVentas = data.reduce((sum, item) => sum + Number(item.total_ventas || 0), 0);
+
+    worksheetData.push({
+      'DANE': '',
+      'Terminal': '',
+      'Nombre': '',
+      'Ubicación': '',
+      'Total TX': '',
+      'Total Ventas': '',
+    });
+    worksheetData.push({
+      'DANE': '',
+      'Terminal': '',
+      'Nombre': 'TOTALES:',
+      'Ubicación': '',
+      'Total TX': totalTX,
+      'Total Ventas': totalVentas
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'Reporte Comercios': worksheet },
+      SheetNames: ['Reporte Comercios']
+    };
+
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array'
+    });
+
+    const dataBlob: Blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    saveAs(dataBlob, `${fileName}.xlsx`);
+  }
+
+  exportToExcelTx(data: any[], fileName: string = 'reporte_tx') {
+    const worksheetData = data.map(item => ({
+      'Id Transacción': item.id,
+      'Fecha': item.fecha,
+      'Documento': item.docuemnto,
+      'Autorización': item.autorizacion,
+      'Valor': item.cantidad
+    }));
+
+    const totalTX = data.reduce((sum, item) => sum + Number(item.cantidad || 0), 0);
+
+    worksheetData.push({
+      'Id Transacción': '',
+      'Fecha': '',
+      'Documento': '',
+      'Autorización': '',
+      'Valor': ''
+    });
+    worksheetData.push({
+      'Id Transacción': '',
+      'Fecha': '',
+      'Documento': 'TOTALES:',
+      'Autorización': '',
+      'Valor': totalTX
+    });
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'Reporte Transacciones': worksheet },
+      SheetNames: ['Reporte Transacciones']
+    };
+
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array'
+    });
+
+    const dataBlob: Blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    saveAs(dataBlob, `${fileName}.xlsx`);
   }
 }

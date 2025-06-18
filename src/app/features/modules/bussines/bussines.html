@@ -4,17 +4,19 @@
             <i class="fa-solid fa-list"></i>
             <p>Listado de Comercios / Cundinamarca y Bogotá</p>
         </span>
-        <div class="filters flex-row">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Buscar comercio..." [(ngModel)]="searchTerm" (input)="globalFilter()">
-                <i class="fa-solid fa-magnifying-glass"></i>
+        <div class="actions flex-row">
+            <div class="flex-row">
+                <p> Total TX: </p>
+                <p>{{ getTotalTx() }}</p>
             </div>
-            <div class="form-group dates">
-                <input type="date" placeholder="Desde" [(ngModel)]="fecha_inicio" (change)="filterByDateRange()" />
+            <div class="flex-row">
+                <p> Total Ventas: </p>
+                <p>{{ getTotalSale() | currency: '$ ' : 'symbol' : '1.0-0' }}</p>
             </div>
-            <div class="form-group dates">
-                <input type="date" placeholder="Hasta" [(ngModel)]="fecha_fin" (change)="filterByDateRange()" />
-            </div>
+            <button type="button" class="btn btn-success flex-row" (click)="downloadExcel()" *ngIf="permissions.includes('export_business_excel') || roles.includes('Administrador')">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Exportar</span>
+            </button>
         </div>
     </div>
 
@@ -26,104 +28,125 @@
             </span>
         </div>
     }@else {
-        <div class="body-card flex-column">
-            <div class="table-container scroll">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th (click)="orderBy('codDane')">
-                                <span>DANE</span>
-                                <span *ngIf="sortColumn === 'codDane'">
-                                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                                </span>
-                            </th>
-                            <th (click)="orderBy('business_id')">
-                                <span>Terminal</span>
-                                <span *ngIf="sortColumn === 'business_id'">
-                                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                                </span>
-                            </th>
-                            <th (click)="orderBy('business_name')">
-                                <span>Nombre</span>
-                                <span *ngIf="sortColumn === 'business_name'">
-                                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                                </span>
-                            </th>
-                            <th (click)="orderBy('city')">
-                                <span>Ubicación</span>
-                                <span *ngIf="sortColumn === 'city'">
-                                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                                </span>
-                            </th>
-                            <th (click)="orderBy('total_transacciones')">
-                                <span>Total TX</span>
-                                <span *ngIf="sortColumn === 'total_transacciones'">
-                                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                                </span>
-                            </th>
-                            <th (click)="orderBy('total_ventas')">
-                                <span>Total Ventas</span>
-                                <span *ngIf="sortColumn === 'total_ventas'">
-                                    {{ sortDirection === 'asc' ? '▲' : '▼' }}
-                                </span>
-                            </th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let bussines of paginatedData" >
-                            <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.business_id }}</td>
-                            <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.codDane }}</td>
-                            <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.business_name }}</td>
-                            <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.department }} / {{ bussines.city }} </td>
-                            <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.total_transacciones }}</td>
-                            <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.total_ventas | currency: '$ ' : 'symbol' : '1.0-0' }}</td>
-                            <td class="flex-row">
-                                <button type="button" class="btn btn-warning">
-                                    <i class="fa-solid fa-toggle-on"></i>
-                                </button>
-                                <button type="button" class="btn btn-third">
-                                    <i class="fa-solid fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="footer flex-row">
-                <div class="buttons flex-row">
-                    <button type="button" class="btn btn-danger flex-row" (click)="downloadPDF()">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        <span>Exportar</span>
-                    </button>
-                    <button type="button" class="btn btn-success flex-row" (click)="downloadPDF()">
-                        <i class="fa-solid fa-file-excel"></i>
-                        <span>Exportar</span>
+        @if(permissions.includes('view_business_cundinamarca') || permissions.includes('view_business_bogota') || roles.includes('Administrador')) {
+            <div class="body-card flex-column">
+                <div class="table-container scroll">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th (click)="orderBy('codDane')">
+                                    <span>DANE</span>
+                                    <span *ngIf="sortColumn === 'codDane'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('business_id')">
+                                    <span>Terminal</span>
+                                    <span *ngIf="sortColumn === 'business_id'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('business_name')">
+                                    <span>Nombre</span>
+                                    <span *ngIf="sortColumn === 'business_name'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('city')">
+                                    <span>Ubicación</span>
+                                    <span *ngIf="sortColumn === 'city'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('total_transacciones')">
+                                    <span>Total TX</span>
+                                    <span *ngIf="sortColumn === 'total_transacciones'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('total_ventas')">
+                                    <span>Total Ventas</span>
+                                    <span *ngIf="sortColumn === 'total_ventas'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th *ngIf="permissions.includes('get_business_id') || permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador')">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let bussines of paginatedData" >
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.codDane }}</td>
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.business_id }}</td>
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.business_name }}</td>
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.department }} / {{ bussines.city }} </td>
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.total_transacciones }}</td>
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.total_ventas | currency: '$ ' : 'symbol' : '1.0-0' }}</td>
+                                <td *ngIf="permissions.includes('get_business_id') || permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador')" class="flex-row">
+                                    <button type="button" class="btn btn-warning" *ngIf="permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador')">
+                                        <i class="fa-solid fa-toggle-on"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-third" *ngIf="permissions.includes('get_business_id') || roles.includes('Administrador')" (click)="viewTransactions(bussines)">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="footer flex-row">
+                    <div class="filters flex-row">
+                        Desde:
+                        <div class="form-group dates">
+                            <input type="date" placeholder="Desde" [(ngModel)]="fecha_inicio" (change)="filterByDateRange()" />
+                        </div>
+                        Hasta:
+                        <div class="form-group dates">
+                            <input type="date" placeholder="Hasta" [(ngModel)]="fecha_fin" (change)="filterByDateRange()" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Buscar comercio..." [(ngModel)]="searchTerm" (input)="globalFilter()">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary flex-row" (click)="openDeactiveDialog()" *ngIf="permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador')" >
+                        <i class="fa-solid fa-ban"></i>
+                        <span>Inactivar</span>
                     </button>
                 </div>
-                <div class="totals flex-column">
-                    <div class="flex-row">
-                        <p> Total TX: </p>
-                        <p>{{ getTotalTx() }}</p>
-                    </div>
-                    <div class="flex-row">
-                        <p> Total Ventas: </p>
-                        <p>{{ getTotalSale() | currency: '$ ' : 'symbol' : '1.0-0' }}</p>
-                    </div>
+                <div class="pagination flex-row">
+                    <button class="btn-pag flex-row" (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">
+                        <i class="fa-solid fa-arrow-alt-circle-left"></i> 
+                        <span>Anterior</span>
+                    </button>
+                    <span>Página {{ currentPage }} de {{ totalPages }}. Hay {{ bussinesData.length }} registros</span>
+                    <button class="btn-pag flex-row" (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">
+                        <span>Siguiente</span> 
+                        <i class="fa-solid fa-arrow-alt-circle-right"></i>
+                    </button>
                 </div>
             </div>
-            
-            <div class="pagination flex-row">
-                <button class="btn-pag flex-row" (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">
-                    <i class="fa-solid fa-arrow-alt-circle-left"></i> 
-                    <span>Anterior</span>
-                </button>
-                <span>Página {{ currentPage }} de {{ totalPages }}</span>
-                <button class="btn-pag flex-row" (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">
-                    <span>Siguiente</span> 
-                    <i class="fa-solid fa-arrow-alt-circle-right"></i>
-                </button>
+        }@else {
+            <div class="loading-spinner flex-row">
+                <span class="loading-span flex-column">
+                    <i class="fa-regular fa-hand"></i>
+                    <p>No tiene permisos para ver esta información</p>
+                </span>
             </div>
-        </div>
+        }
     }
+</div>
+
+<div class="dialog-container flex-row" *ngIf="deactiveDialog">
+    <div class="dialog-content flex-column">
+        <h3 class="draggable-header" appDraggable>Desactivar Comercios </h3>
+            <div class="dialog-body scroll">
+                @for (business of selected; track $index) {
+                    <p style="color: var(--white-color)">{{ business.business_id }} - {{ business.business_name }}</p>
+                }
+            </div>
+        <div class="actions flex-row">
+          <button type="submit" class="btn btn-success flex-row" (click)="deactiveBusiness()"> <i class="fa-solid fa-check"></i>Confirmar</button>
+          <button type="button" class="btn btn-warning flex-row" (click)="closeDeactiveDialog()"> <i class="fa-solid fa-times"></i>Cancelar</button>
+        </div>  
+    </div>
 </div>

@@ -34,7 +34,9 @@ export class AuthService {
 
   getUserProfile(): Observable<any> {
     return this.http.get<any>(`${this.API_AUTH}/users/me/`).pipe(
-      tap(user => this.userSubject.next(user))
+      tap(user => {
+        this.userSubject.next(user)
+      })
     );
   }
   

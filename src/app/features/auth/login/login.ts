@@ -48,7 +48,7 @@ export class Login implements OnInit {
       next: (response) => {
         localStorage.setItem('access_token', response.access_token);
         this.alertService.showAlert('success', 'Inicio de sesión exitoso.', 3000);
-        this.router.navigate(['/modules/users']);
+        this.router.navigate(['/modules/bussines']);
       },
       error: (error) => {
         this.alertService.showAlert('error', 'Error al iniciar sesión. Verifique sus credenciales.', 5000);

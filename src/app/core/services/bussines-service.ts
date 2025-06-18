@@ -4,25 +4,28 @@ import { environment } from "../../../environments/environment.development";
 import { Observable } from "rxjs";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class BussinesService {
 
-    private API_BACK = environment.API_BACK;
+  private API_BACK = environment.API_BACK;
 
-    constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-    getBusinessData(body: any): Observable<any[]> {
-        return this.http.post<any[]>(`${this.API_BACK}/bussines/`, body);
-    }
+  getBusinessData(body: any): Observable<any[]> {
+    return this.http.post<any[]>(`${this.API_BACK}/bussines/`, body);
+  }
 
-    getTransaccioens(body: any): Observable<any> {
-    const httpOptions = {
-      headers: {
-        'accept': 'application/json'
-      }
-    };
-    return this.http.post<any>('https://comercialapptest.practisistemas.com:8087/api/get-transactions', body, httpOptions);
+  getTransactions(body: any): Observable<any> {
+    return this.http.post<any>(`${this.API_BACK}/bussines/search`, body);
+  }
+
+  activeBusiness(id_bussines: any): Observable<any> {
+    return this.http.put<any>(`${this.API_BACK}/bussines/activate`, id_bussines);
+  }
+
+  deactiveBusiness(id_bussines: any): Observable<any> {
+    return this.http.put<any>(`${this.API_BACK}/bussines/deactivate`, id_bussines);
   }
 
 }
