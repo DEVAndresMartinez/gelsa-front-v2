@@ -16,6 +16,7 @@ export class Header implements OnInit {
   user$: typeof this.authService.user$;
   isNew: boolean = false;
   userId: string = '';
+  loading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -41,6 +42,7 @@ export class Header implements OnInit {
   }
 
   logout() {
+    this.loading = true;
     const token = localStorage.getItem('access_token');
     if (!token) {
       this.router.navigate(['/auth/login']);
@@ -48,8 +50,9 @@ export class Header implements OnInit {
     }
     this.authService.logout().subscribe({
       next: () => {
-        this.router.navigate(['/auth/login']);
         localStorage.removeItem('access_token');
+        this.loading = false;
+        this.router.navigate(['/auth/login']);
       },
       error: (error) => {
         this.alertService.showAlert('error', 'Error al cerrar sesión. Inténtalo de nuevo.', 5000);

@@ -5,7 +5,7 @@
             <p>Listado de Usuarios</p>
         </span>
         <div class="filters actions flex-row">
-            <button type="button" class="btn btn-success flex-row" (click)="openNewUser()">
+            <button *ngIf="permissions.includes('create_users')" type="button" class="btn btn-success flex-row" (click)="openNewUser()">
                 <i class="fa-solid fa-plus"></i>
                 <span>Nuevo</span>
             </button>
@@ -26,7 +26,7 @@
                         <h4>{{ user.full_name }}</h4>
                         <p> <b>Correo: </b>  <br> {{ user.email }}</p>
                         <p> <b>Rol: </b> {{ user.roles[0]?.role_name || 'Sin rol' }}</p>
-                        <div class="actions flex-row">
+                        <div class="actions flex-row" *ngIf="permissions.includes('user_role_assing_multiple')">
                             <button type="button" class="btn btn-warning flex-row" (click)="openEditRoles(user)">
                                 <i class="fa-solid fa-pen-to-square"></i>
                                 <span>Editar Roles</span>

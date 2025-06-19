@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { DraggableDirective } from '../../../core/directives/draggable-directive';
 import { RolesService } from '../../../core/services/roles-service';
 import { AuthService } from '../../../core/services/auth-service';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users',
@@ -16,9 +17,11 @@ import { AuthService } from '../../../core/services/auth-service';
 })
 export class Users implements OnInit {
 
+  user$: typeof this.authService.user$;
   loading: boolean = false;
   usersData: any[] = [];
   userDialog: boolean = false;
+  permissions: any[] = [];
   userSelected: any = [];
   rolesData: any[] = [];
   rolesDialog: boolean = false;
@@ -34,10 +37,16 @@ export class Users implements OnInit {
     private rolesService: RolesService,
     private authService: AuthService,
     private alertService: AlertService
-  ) { }
+  ) {
+    this.user$ = this.authService.user$;
+  }
 
   ngOnInit(): void {
-    this.loadUsersData();
+    this.user$.pipe(
+      filter(user => !!user && !!user.permissions), take(1)).subscribe(user => {
+        this.permissions = user.permissions.map((permission: any) => permission.name);
+        this.loadUsersData();
+      });
   }
 
   loadUsersData() {
@@ -125,7 +134,7 @@ export class Users implements OnInit {
     };
     if (body.role_id === null) {
       this.alertService.showAlert('warning', 'Debe seleccionar un rol.', 5000);
-    } else {     
+    } else {
       this.rolesService.asssignRole(body).subscribe({
         next: () => {
           this.alertService.showAlert('success', 'Roles asignados correctamente.', 5000);

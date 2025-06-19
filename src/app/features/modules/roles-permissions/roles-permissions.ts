@@ -4,6 +4,8 @@ import { AlertService } from '../../../core/services/alert-service';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DraggableDirective } from '../../../core/directives/draggable-directive';
+import { AuthService } from '../../../core/services/auth-service';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-roles-permissions',
@@ -13,7 +15,9 @@ import { DraggableDirective } from '../../../core/directives/draggable-directive
   styleUrl: './roles-permissions.scss'
 })
 export class RolesPermissions implements OnInit {
-
+  
+  
+  user$: typeof this.authService.user$;
   loading: boolean = false;
   loadingPermissions: boolean = false;
   rolesData: any[] = [];
@@ -24,6 +28,8 @@ export class RolesPermissions implements OnInit {
   isEditRole: boolean = false;
   permissionSelected: number[] = [];
   roleSelected: any[] = [];
+  permissions: any[] = [];
+  roles: any[] = [];
   permissionsByRole: any[] = [];
   permissionsDialog: boolean = false;
 
@@ -35,11 +41,20 @@ export class RolesPermissions implements OnInit {
 
   constructor(
     private rolesService: RolesService,
-    private alertService: AlertService
-  ) { }
+    private alertService: AlertService,
+    private authService: AuthService
+  ) { 
+    this.user$ = this.authService.user$;
+  
+  }
 
   ngOnInit(): void {
-    this.loadRoles();
+    this.user$.pipe(
+      filter(user => !!user && !! user.permissions),take(1)).subscribe(user => {
+        this.permissions = user.permissions.map((permission: any) => permission.name);
+        this.roles = user.roles.map((role: any) => role.role_name);
+        this.loadRoles();
+    });
   }
 
   loadRoles() {

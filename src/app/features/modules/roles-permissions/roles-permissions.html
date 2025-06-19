@@ -5,7 +5,7 @@
             <p>Listado de Roles</p>
         </span>
         <div class="filters actions flex-row">
-            <button type="button" class="btn btn-success flex-row" (click)="openNewRole()">
+            <button *ngIf="permissions.includes('create_roles')" type="button" class="btn btn-success flex-row" (click)="openNewRole()">
                 <i class="fa-solid fa-plus"></i>
                 <span>Nuevo</span>
             </button>
@@ -25,12 +25,12 @@
                     <div class="card flex-column">
                         <h4>{{ role.role_name }}</h4>
                         <p> <b>Descripción: </b> {{ role.description || 'Sin descripción' }}</p>
-                        <div class="actions flex-row">
-                            <button type="button" class="btn btn-warning flex-row" (click)="openEditPermissions(role)">
+                        <div *ngIf="role.role_name !== 'Administrador'" class="actions flex-row">
+                            <button *ngIf="roles.includes('Administrador') || permissions.includes('assign_permission_to_role')" type="button" class="btn btn-warning flex-row" (click)="openEditPermissions(role)">
                                 <i class="fa-solid fa-list-check"></i>
                                 <span>Permisos</span>
                             </button>
-                            <button type="button" class="btn btn-primary flex-row" (click)="openNewRole(true, role)">
+                            <button *ngIf="permissions.includes('update_roles')" type="button" class="btn btn-primary flex-row" (click)="openNewRole(true, role)">
                                 <i class="fa-solid fa-pen-to-square"></i>
                                 <span>Editar</span>
                             </button>

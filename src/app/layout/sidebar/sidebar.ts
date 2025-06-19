@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
-import { filter } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidebar',
@@ -24,19 +24,19 @@ export class Sidebar implements OnInit {
       title: 'Usuarios',
       icon: 'fa fa-users',
       link: '/modules/users',
-      requiredPermission: ['Administrador']
+      requiredPermission: ['get_all_users']
     },
     {
       title: 'Roles y Permisos',
       icon: 'fa fa-shield',
       link: '/modules/roles-permissions',
-      requiredPermission: ['Administrador']
+      requiredPermission: ['read_roles']
     },
     {
       title: 'Comercios',
       icon: 'fa fa-store',
-      link: '/modules/bussines',
-      requiredPermission: ['Administrador', 'tat bogotá']
+      link: '/modules/business',
+      requiredPermission: ['view_business_bogota', 'view_business_cundinamarca']
     }
   ];
 
@@ -54,14 +54,16 @@ export class Sidebar implements OnInit {
       this.authService.getUserProfile().subscribe();
     }
 
-    this.user$.pipe(filter(user => !!user && !!user.roles)).subscribe(user => {
-      const userPermissions = user.roles.map((permission: any) => permission.name);
-
-      this.menuItems = this.menuItemsCopy.filter(item =>
-        item.requiredPermission.some((required: string) => userPermissions.includes(required))
-      );
-      this.loading = false;
+    this.user$.pipe(filter(user => !!user && !!user.permissions), take(1)).subscribe(user => {
+    this.permissions = user.permissions.map((permission: any) => permission.name);
+    
+    this.menuItems = this.menuItemsCopy.filter(item => {
+      if (!item.requiredPermission) return true;
+      const required = Array.isArray(item.requiredPermission) ? item.requiredPermission : [item.requiredPermission];
+      return required.some((perm: string) => this.permissions.includes(perm));
     });
+    this.loading = false;
+  });
   }
 }
 

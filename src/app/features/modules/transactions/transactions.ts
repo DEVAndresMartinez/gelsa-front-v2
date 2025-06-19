@@ -156,7 +156,7 @@ export class Transactions implements OnInit {
   }
 
   backBusiness() {
-    this.router.navigate(['modules/bussines'])
+    this.router.navigate(['/modules/business'])
   }
 
 }

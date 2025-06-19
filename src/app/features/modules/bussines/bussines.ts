@@ -37,6 +37,8 @@ export class Bussines implements OnInit {
   totalSale: number = 0;
   selected: any[] = [];
   deactiveDialog: boolean = false;
+  isInactives: boolean = false;
+  loadingStatus: boolean = false;
 
   constructor(
     private bussinesService: BussinesService,
@@ -56,7 +58,11 @@ export class Bussines implements OnInit {
         this.permissions = user.permissions.map((permission: any) => permission.name);
 
       if (this.permissions.includes('view_business_cundinamarca') || this.permissions.includes('view_business_bogota') || this.roles.includes('Administrador')) {
-        this.loadBusinessData();
+        if (this.isInactives) {
+          this.loadInactiveBusiness();
+        } else {
+          this.loadBusinessData();
+        }
       } else {
         this.alertService.showAlert('warning', 'No tiene permisos para ver los comercios.', 5000);
       }
@@ -97,6 +103,45 @@ export class Bussines implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  loadInactiveBusiness() {
+    this.loading = true;
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+    this.bussinesData = [];
+    this.bussinesDataCopy = [];
+    this.bussinesService.getInactiveBusiness().subscribe({
+      next: (data: any) => {
+        this.bussinesDataCopy = data;
+        this.bussinesData = [...this.bussinesDataCopy];
+
+        if (this.bussinesData.length === 0) {
+          this.alertService.showAlert('info', 'No hay comercios inactivos.', 5000);
+        } else {
+          this.alertService.showAlert('success', 'Comercios cargados correctamente.', 5000);
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        this.alertService.showAlert('error', 'Error al cargar los comercios, inente nuevamente.', 5000);
+        this.loading = false;
+      }
+    });
+  }
+
+  changeBusiness() {
+    this.loadingStatus = true;
+    this.isInactives = !this.isInactives;
+    if (this.isInactives) {
+      this.selected = [];
+      this.loadInactiveBusiness();
+      this.loadingStatus = false;
+    } else {
+      this.selected = [];
+      this.loadBusinessData();
+      this.loadingStatus = false;
+    }
   }
 
   getTotalTx(): number {
@@ -156,11 +201,14 @@ export class Bussines implements OnInit {
   }
 
   onSelect(event: any, bussines: any) {
-    const index = this.selected.findIndex((row: any) => row.business_id === bussines.business_id);
+    const index = this.selected.findIndex((row: any) => row.business_id === (bussines.business_id || bussines.id_bussines));
     if (index !== -1) {
       this.selected.splice(index, 1);
     } else {
-      this.selected.push(bussines);
+      this.selected.push({
+        business_id: bussines.business_id || bussines.id_bussines,
+        business_name: bussines.business_name || bussines.name_bussines
+      });
     }
   }
 
@@ -170,7 +218,7 @@ export class Bussines implements OnInit {
   }
 
   isSelected(bussines: any): boolean {
-    return this.selected.some(row => row.business_id === bussines.business_id);
+    return this.selected.some(row => row.business_id === (bussines.business_id || bussines.id_bussines));
   }
 
   get paginatedData() {
@@ -188,7 +236,7 @@ export class Bussines implements OnInit {
       date_final: this.fecha_fin,
       date_ini: this.fecha_inicio
     }
-    this.router.navigate([`modules/bussines/${body.business_id}/transactions/${body.date_ini}/${body.date_final}`]);
+    this.router.navigate([`/modules/business/${body.business_id}/transactions/${body.date_ini}/${body.date_final}`]);
   }
 
   openDeactiveDialog() {
@@ -204,22 +252,43 @@ export class Bussines implements OnInit {
   }
 
   deactiveBusiness() {
-    const id_bussines = this.selected.map(item => item.business_id);
+    const id_bussines = this.selected.map(item => item.business_id || item.id_bussines);
     const body = {
       id_bussines: id_bussines
     }
-    console.log(body)
-    this.bussinesService.deactiveBusiness(body).subscribe({
-      next: () => {
-        this.alertService.showAlert('success', 'Comercios desactivados correctamente.', 5000);
-        this.loadBusinessData();
-        this.currentPage = 1;
-        this.closeDeactiveDialog();
-      },
-      error: () => {
-        this.alertService.showAlert('error', 'Error al desactivar los comercios, intente nuevamente.', 5000);
-        this.closeDeactiveDialog();
-      }
-    })
+    this.loadingStatus = true;
+    if (this.isInactives) {
+      this.bussinesService.activeBusiness(body).subscribe({
+        next: () => {
+          this.alertService.showAlert('success', 'Comercios activados correctamente.', 5000);
+          this.loadInactiveBusiness();
+          this.selected = [];
+          this.currentPage = 1;
+          this.loadingStatus = false;
+          this.closeDeactiveDialog();
+        },
+        error: () => {
+          this.loadingStatus = false;
+          this.alertService.showAlert('error', 'Error al activar los comercios, intente nuevamente.', 5000);
+          this.closeDeactiveDialog();
+        }
+      });
+    } else {
+      this.bussinesService.deactiveBusiness(body).subscribe({
+        next: () => {
+          this.alertService.showAlert('success', 'Comercios desactivados correctamente.', 5000);
+          this.loadBusinessData();
+          this.selected = [];
+          this.currentPage = 1;
+          this.loadingStatus = false;
+          this.closeDeactiveDialog();
+        },
+        error: () => {
+          this.loadingStatus = false;
+          this.alertService.showAlert('error', 'Error al desactivar los comercios, intente nuevamente.', 5000);
+          this.closeDeactiveDialog();
+        }
+      });
+    }
   }
 }

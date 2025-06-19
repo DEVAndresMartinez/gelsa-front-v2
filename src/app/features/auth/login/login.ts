@@ -19,6 +19,7 @@ export class Login implements OnInit {
   protected showPassword: boolean = false;
   showAlert: boolean = false;
   showRecoveryDialog: boolean = false;
+  loading: boolean = false;
 
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.email]),
@@ -44,11 +45,13 @@ export class Login implements OnInit {
     const formData = new FormData();
     formData.append('username', form.username);
     formData.append('password', form.password);
+    this.loading = true;
     this.authService.login(formData).subscribe({
       next: (response) => {
         localStorage.setItem('access_token', response.access_token);
         this.alertService.showAlert('success', 'Inicio de sesión exitoso.', 3000);
-        this.router.navigate(['/modules/bussines']);
+        this.loading = false;
+        this.router.navigate(['/modules/business']);
       },
       error: (error) => {
         this.alertService.showAlert('error', 'Error al iniciar sesión. Verifique sus credenciales.', 5000);

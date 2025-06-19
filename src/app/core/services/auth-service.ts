@@ -21,6 +21,7 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
+    this.userSubject.next(null);
     return this.http.post<any>(`${this.API_AUTH}/logout`, {});
   }
 

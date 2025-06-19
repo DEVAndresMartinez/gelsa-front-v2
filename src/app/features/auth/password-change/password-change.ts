@@ -53,7 +53,7 @@ export class PasswordChange implements OnInit {
         next: () => {
           this.passwordForm.reset()
           this.alertService.showAlert('success', 'Contraseña actualizada correctamente', 5000);
-          this.router.navigate(['/modules/bussines']);
+          this.router.navigate(['/modules/business']);
           this.loading = false;
         },
         error: () => {
@@ -66,7 +66,7 @@ export class PasswordChange implements OnInit {
 
   cancelChange() {
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/modules/bussines']);
+      this.router.navigate(['/modules/business']);
     } else {
       this.router.navigate(['/auth/login']);
     }

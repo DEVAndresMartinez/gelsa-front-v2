@@ -17,6 +17,10 @@
                 <i class="fa-solid fa-file-excel"></i>
                 <span>Exportar</span>
             </button>
+            <button type="button" class="btn btn-third flex-row" (click)="changeBusiness()" *ngIf="permissions.includes('view_business_cundinamarca') || permissions.includes('view_business_bogota') || roles.includes('Administrador')">
+                <i class="fa-solid" [class]="isInactives ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
+                <span>{{ isInactives ? 'Ver activos' : 'Ver inactivos'}}</span>
+            </button>
         </div>
     </div>
 
@@ -58,33 +62,30 @@
                                         {{ sortDirection === 'asc' ? '▲' : '▼' }}
                                     </span>
                                 </th>
-                                <th (click)="orderBy('total_transacciones')">
+                                <th *ngIf="!isInactives" (click)="orderBy('total_transacciones')">
                                     <span>Total TX</span>
                                     <span *ngIf="sortColumn === 'total_transacciones'">
                                         {{ sortDirection === 'asc' ? '▲' : '▼' }}
                                     </span>
                                 </th>
-                                <th (click)="orderBy('total_ventas')">
+                                <th *ngIf="!isInactives" (click)="orderBy('total_ventas')">
                                     <span>Total Ventas</span>
                                     <span *ngIf="sortColumn === 'total_ventas'">
                                         {{ sortDirection === 'asc' ? '▲' : '▼' }}
                                     </span>
                                 </th>
-                                <th *ngIf="permissions.includes('get_business_id') || permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador')">Acciones</th>
+                                <th *ngIf="!isInactives && (permissions.includes('get_business_id') || roles.includes('Administrador'))">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let bussines of paginatedData" >
-                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.codDane }}</td>
-                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.business_id }}</td>
-                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.business_name }}</td>
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.codDane || bussines.id_dane }}</td>
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.business_id || bussines.id_bussines }}</td>
+                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.business_name || bussines.name_bussines }}</td>
                                 <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.department }} / {{ bussines.city }} </td>
-                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.total_transacciones }}</td>
-                                <td (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.total_ventas | currency: '$ ' : 'symbol' : '1.0-0' }}</td>
-                                <td *ngIf="permissions.includes('get_business_id') || permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador')" class="flex-row">
-                                    <button type="button" class="btn btn-warning" *ngIf="permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador')">
-                                        <i class="fa-solid fa-toggle-on"></i>
-                                    </button>
+                                <td *ngIf="!isInactives" (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.total_transacciones }}</td>
+                                <td *ngIf="!isInactives" (click)="onSelect($event, bussines)" [class.selected-row]="isSelected(bussines)">{{ bussines.total_ventas | currency: '$ ' : 'symbol' : '1.0-0' }}</td>
+                                <td *ngIf="!isInactives && (permissions.includes('get_business_id') || roles.includes('Administrador'))" class="flex-row" style="justify-content: center">
                                     <button type="button" class="btn btn-third" *ngIf="permissions.includes('get_business_id') || roles.includes('Administrador')" (click)="viewTransactions(bussines)">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
@@ -108,7 +109,11 @@
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary flex-row" (click)="openDeactiveDialog()" *ngIf="permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador')" >
+                    <button type="button" class="btn btn-primary flex-row" (click)="openDeactiveDialog()" *ngIf="isInactives && (permissions.includes('activate_business_cundinamarca') || permissions.includes('activate_business_bogota') || roles.includes('Administrador'))">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Activar</span>
+                    </button>
+                    <button type="button" class="btn btn-primary flex-row" (click)="openDeactiveDialog()" *ngIf="!isInactives && (permissions.includes('deactivate_business_cundinamarca') || permissions.includes('deactivate_business_bogota') || roles.includes('Administrador'))" >
                         <i class="fa-solid fa-ban"></i>
                         <span>Inactivar</span>
                     </button>
@@ -138,14 +143,14 @@
 
 <div class="dialog-container flex-row" *ngIf="deactiveDialog">
     <div class="dialog-content flex-column">
-        <h3 class="draggable-header" appDraggable>Desactivar Comercios </h3>
+        <h3 class="draggable-header" appDraggable>{{ isInactives ? 'Activar comercios' : 'Desactivar Comercios'  }} </h3>
             <div class="dialog-body scroll">
                 @for (business of selected; track $index) {
                     <p style="color: var(--white-color)">{{ business.business_id }} - {{ business.business_name }}</p>
                 }
             </div>
         <div class="actions flex-row">
-          <button type="submit" class="btn btn-success flex-row" (click)="deactiveBusiness()"> <i class="fa-solid fa-check"></i>Confirmar</button>
+          <button type="submit" class="btn btn-success flex-row" (click)="deactiveBusiness()" [disabled]="loadingStatus"> <i class="fa-solid fa-check"></i>Confirmar</button>
           <button type="button" class="btn btn-warning flex-row" (click)="closeDeactiveDialog()"> <i class="fa-solid fa-times"></i>Cancelar</button>
         </div>  
     </div>

@@ -8,7 +8,7 @@
             <p>Listado de transacciones / comercio: <b>{{ id_bussines }}</b> </p>
         </span>
         <div class="actions flex-row">
-            <button type="button" class="btn btn-success flex-row" (click)="downloadExcel()">
+            <button *ngIf="permissions.includes('export_transaction_excel')" type="button" class="btn btn-success flex-row" (click)="downloadExcel()">
                 <i class="fa-solid fa-file-excel"></i>
                 <span>Exportar</span>
             </button>
