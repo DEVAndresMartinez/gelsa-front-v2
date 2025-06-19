@@ -21,6 +21,7 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
+    this.userSubject.next(null);
     return this.http.post<any>(`${this.API_AUTH}/logout`, {});
   }
 
@@ -32,13 +33,11 @@ export class AuthService {
     return false;
   }
 
-  recoverPassword(email: string): Observable<any> {
-    return this.http.post<any>(`${this.API_BACK}/send-reset-password/${email}`, {});
-  }
-
   getUserProfile(): Observable<any> {
     return this.http.get<any>(`${this.API_AUTH}/users/me/`).pipe(
-      tap(user => this.userSubject.next(user))
+      tap(user => {
+        this.userSubject.next(user)
+      })
     );
   }
   

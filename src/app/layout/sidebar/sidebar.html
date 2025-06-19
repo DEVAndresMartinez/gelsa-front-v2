@@ -1,14 +1,23 @@
 <div class="content">
-    <div class="sidebar-links flex-column">
-        @for (item of menuItems; track $index) {
-        <li
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            [routerLink]="item.link">
-            <i [class]="item.icon"></i>
-            {{ item.title }}
-        </li>
-        }
-    </div>
+    @if(loading) {
+        <div class="loading-spinner flex-row">
+            <span class="loading-span flex-column">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Cargando datos...</p>
+            </span>
+        </div>
+    }@else {
+        <div class="sidebar-links flex-column">
+            @for (item of menuItems; track $index) {
+            <li
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [routerLink]="item.link">
+                <i [class]="item.icon"></i>
+                {{ item.title }}
+            </li>
+            }
+        </div>
+    }
 </div>
 

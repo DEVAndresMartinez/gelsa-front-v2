@@ -1,0 +1,112 @@
+<div class="card-12">
+    <div class="header-card flex-row">
+        <span class="flex-row"> 
+            <button type="button" class="btn btn-primary" (click)="backBusiness()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <i class="fa-solid fa-list"></i>
+            <p>Listado de transacciones / comercio: <b>{{ id_bussines }}</b> </p>
+        </span>
+        <div class="actions flex-row">
+            <button *ngIf="permissions.includes('export_transaction_excel')" type="button" class="btn btn-success flex-row" (click)="downloadExcel()">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>Exportar</span>
+            </button>
+        </div>
+    </div>
+    @if(loading) {
+        <div class="loading-spinner flex-row">
+            <span class="loading-span flex-column">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Cargando datos...</p>
+            </span>
+        </div>
+    }@else {
+        @if(permissions.includes('get_business_id')) {
+            <div class="body-card flex-column">
+                <div class="table-container scroll">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th (click)="orderBy('id')">
+                                    <span>Id Transacción</span>
+                                    <span *ngIf="sortColumn === 'id'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('fecha')">
+                                    <span>Fecha</span>
+                                    <span *ngIf="sortColumn === 'fecha'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('documento')">
+                                    <span>Documento</span>
+                                    <span *ngIf="sortColumn === 'documento'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('autorizacion')">
+                                    <span>Autorización</span>
+                                    <span *ngIf="sortColumn === 'autorizacion'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                                <th (click)="orderBy('cantidad')">
+                                    <span>Valor</span>
+                                    <span *ngIf="sortColumn === 'cantidad'">
+                                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                                    </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let tx of transactionsData" >
+                                <td>{{ tx.id }}</td>
+                                <td>{{ tx.fecha }} </td>
+                                <td>{{ tx.documento }}</td>
+                                <td>{{ tx.autorizacion }} </td>
+                                <td>{{ tx.cantidad | currency: '$ ' : 'symbol' : '1.0-0' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="footer flex-row">
+                    <div class="filters flex-row">
+                        Desde:
+                        <div class="form-group dates">
+                            <input type="date" placeholder="Desde" [(ngModel)]="fecha_inicio" (change)="filterByDateRange()" />
+                        </div>
+                        Hasta:
+                        <div class="form-group dates">
+                            <input type="date" placeholder="Hasta" [(ngModel)]="fecha_fin" (change)="filterByDateRange()" />
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Buscar transacción..." [(ngModel)]="searchTerm" (input)="globalFilter()">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="pagination flex-row">
+                    <button class="btn-pag flex-row" (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">
+                        <i class="fa-solid fa-arrow-alt-circle-left"></i> 
+                        <span>Anterior</span>
+                    </button>
+                    <span>Página {{ currentPage }} de {{ totalPages }}. Hay {{ transactionsData.length }} registros</span>
+                    <button class="btn-pag flex-row" (click)="currentPage = currentPage + 1" [disabled]="currentPage === totalPages">
+                        <span>Siguiente</span> 
+                        <i class="fa-solid fa-arrow-alt-circle-right"></i>
+                    </button>
+                </div>
+            </div>
+        }@else {
+            <div class="loading-spinner flex-row">
+                <span class="loading-span flex-column">
+                    <i class="fa-regular fa-hand"></i>
+                    <p>No tiene permisos para ver esta información</p>
+                </span>
+            </div>
+        }
+    }
+</div>
+

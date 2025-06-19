@@ -66,35 +66,3 @@
         }
     }
 }
-
-.dialog-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    background-color: #00000050;
-
-    .dialog-content {
-        width: 450px;
-        background-color: var(--primary-color);
-        border-radius: 8px;
-        padding: 2rem;
-        box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.25);
-        
-        @media (width < 768px) {
-            width: 90dvw;
-        }
-        
-        h3 {
-            color: var(--third-color);
-        }
-
-        .form {
-            width: 100%;
-            color: var(--white-color);
-        }        
-    }
-
-}

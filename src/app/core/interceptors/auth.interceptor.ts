@@ -26,9 +26,11 @@ export class AuthInterceptor implements HttpInterceptor {
             this.alertService.showAlert('info', 'Sesión expirada. Por favor, inicie sesión nuevamente.', 5000);
             this.router.navigate(['/auth/login']);
           }
-          return throwError(() => {})
+          return throwError(() => error)
         })
       );
+    } else {
+      this.router.navigate(['/auth/login']);
     }
     return next.handle(req);
   }

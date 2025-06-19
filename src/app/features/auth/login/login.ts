@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth-service';
 import { AlertService } from '../../../core/services/alert-service';
 import { DraggableDirective } from '../../../core/directives/draggable-directive';
+import { UserService } from '../../../core/services/user-service';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,7 @@ export class Login implements OnInit {
   protected showPassword: boolean = false;
   showAlert: boolean = false;
   showRecoveryDialog: boolean = false;
+  loading: boolean = false;
 
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.email]),
@@ -31,6 +33,7 @@ export class Login implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private userService: UserService,
     private alertService: AlertService
   ) {}
 
@@ -42,11 +45,13 @@ export class Login implements OnInit {
     const formData = new FormData();
     formData.append('username', form.username);
     formData.append('password', form.password);
+    this.loading = true;
     this.authService.login(formData).subscribe({
       next: (response) => {
-        this.alertService.showAlert('success', 'Inicio de sesión exitoso.', 3000);
         localStorage.setItem('access_token', response.access_token);
-        this.router.navigate(['/modules/home']);
+        this.alertService.showAlert('success', 'Inicio de sesión exitoso.', 3000);
+        this.loading = false;
+        this.router.navigate(['/modules/business']);
       },
       error: (error) => {
         this.alertService.showAlert('error', 'Error al iniciar sesión. Verifique sus credenciales.', 5000);
@@ -72,7 +77,7 @@ export class Login implements OnInit {
       this.alertService.showAlert('error', 'Por favor, ingrese un correo valido.', 3000);
     } else {
       const email = this.recoveryForm.get('email')?.value;
-      this.authService.recoverPassword(email).subscribe({
+      this.userService.recoverPassword(email).subscribe({
         next: () => {
           this.alertService.showAlert('success', 'Correo de recuperación enviado', 3000);
           this.showRecoveryDialog = false;

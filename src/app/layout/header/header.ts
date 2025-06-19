@@ -14,6 +14,9 @@ import { CommonModule } from '@angular/common';
 export class Header implements OnInit {
 
   user$: typeof this.authService.user$;
+  isNew: boolean = false;
+  userId: string = '';
+  loading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -25,15 +28,30 @@ export class Header implements OnInit {
 
   ngOnInit(): void {
     if (!this.authService.currentUser) {
-      this.authService.getUserProfile().subscribe()
+      this.authService.getUserProfile().subscribe();
+
+      this.user$.subscribe(user => {
+        this.userId = user?.user.id;
+        this.isNew = user?.user.is_new;
+
+        if (this.isNew) {
+          this.router.navigate([`/auth/change-password/${this.userId}`]);
+        }
+      })
     }
   }
 
   logout() {
+    this.loading = true;
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
     this.authService.logout().subscribe({
       next: () => {
         localStorage.removeItem('access_token');
-        window.location.reload();
+        this.loading = false;
         this.router.navigate(['/auth/login']);
       },
       error: (error) => {

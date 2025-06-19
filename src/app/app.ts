@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Header } from './layout/header/header';
 import { Sidebar } from './layout/sidebar/sidebar';
 import { AuthService } from './core/services/auth-service';
 import { AlertContainer } from './shared/alert-container/alert-container';
 import { CommonModule } from '@angular/common';
 import { Logo } from './layout/logo/logo';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',

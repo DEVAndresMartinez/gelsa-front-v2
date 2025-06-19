@@ -1,0 +1,93 @@
+<div class="card-12">
+    <div class="header-card flex-row">
+        <span class="flex-row">
+            <i class="fa-solid fa-list"></i>
+            <p>Listado de Roles</p>
+        </span>
+        <div class="filters actions flex-row">
+            <button *ngIf="permissions.includes('create_roles')" type="button" class="btn btn-success flex-row" (click)="openNewRole()">
+                <i class="fa-solid fa-plus"></i>
+                <span>Nuevo</span>
+            </button>
+        </div>
+    </div>
+    @if(loading) {
+        <div class="loading-spinner flex-row">
+            <span class="loading-span flex-column">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Cargando datos...</p>
+            </span>
+        </div> 
+    }@else {
+        <div class="body-card flex-column">
+            <div class="body-container scroll flex-row">
+                @for (role of rolesData; track $index) {
+                    <div class="card flex-column">
+                        <h4>{{ role.role_name }}</h4>
+                        <p> <b>Descripción: </b> {{ role.description || 'Sin descripción' }}</p>
+                        <div *ngIf="role.role_name !== 'Administrador'" class="actions flex-row">
+                            <button *ngIf="roles.includes('Administrador') || permissions.includes('assign_permission_to_role')" type="button" class="btn btn-warning flex-row" (click)="openEditPermissions(role)">
+                                <i class="fa-solid fa-list-check"></i>
+                                <span>Permisos</span>
+                            </button>
+                            <button *ngIf="permissions.includes('update_roles')" type="button" class="btn btn-primary flex-row" (click)="openNewRole(true, role)">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <span>Editar</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<div class="dialog-container flex-row" *ngIf="roleDialog">
+    <div class="dialog-content flex-column">
+        <h3 class="draggable-header" appDraggable>Crear Nuevo Usuario</h3>
+        <form [formGroup]="roleForm" (ngSubmit)="saveRole()" class="form flex-column">
+            <div class="form-group flex-column">
+                <label for="role_name">Nombre del Rol</label>
+                <input type="role_name" formControlName="role_name" id="role_name" placeholder="Activar Comercios en Cundinamarca" required autocomplete="role_name" maxlength="80">
+                <i class="fa-solid fa-info-circle"></i>
+            </div>
+            <div class="form-group flex-column">
+                <label for="description">Descripción del Rol</label>
+                <input type="description" formControlName="description" id="description" placeholder="Rol para activar comercios en Cundinamarca" required autocomplete="description" maxlength="80">
+                <i class="fa-solid fa-id-card"></i>
+            </div>
+          <div class="actions flex-row">
+            <button type="submit" class="btn btn-success flex-row"> <i class="fa-solid fa-check"></i>{{ isEditRole ? 'Actualizar' : 'Crear' }}</button>
+            <button type="button" class="btn btn-warning flex-row" (click)="hideDialog()"> <i class="fa-solid fa-times"></i>Cancelar</button>
+          </div>  
+        </form>
+    </div>
+</div>
+
+<div class="dialog-container flex-row" *ngIf="permissionsDialog">
+    <div class="dialog-content flex-column">
+        <h3 class="draggable-header" appDraggable>Asignar permisos a <b>{{ roleName }}</b> </h3>
+        @if(loadingPermissions) {
+        <div style="color: var(--white-color);"class="loading-spinner flex-row">
+            <span class="loading-span flex-column">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Cargando datos...</p>
+            </span>
+        </div> 
+        }@else {
+            <div class="dialog-body scroll">
+                @for (role of permissionsData; track $index) {
+                    <label class="custom-checkbox">
+                        <input type="checkbox" [id]="role.id" [checked]="permissionSelected.includes(role.id)" (click)="selectedRole(role.id)"/>
+                        <span class="checkmark"></span>
+                        {{ role.description }}
+                    </label>
+                }
+            </div>
+        }
+        <div class="actions flex-row">
+          <button type="submit" class="btn btn-success flex-row" (click)="savePermissions()"> <i class="fa-solid fa-check"></i>Asignar</button>
+          <button type="button" class="btn btn-warning flex-row" (click)="hidePermissionsDialog()"> <i class="fa-solid fa-times"></i>Cancelar</button>
+        </div>  
+    </div>
+</div>
